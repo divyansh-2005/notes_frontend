@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { AuthContext } from './AuthContext';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   // Access the user context
@@ -23,10 +24,9 @@ const Dashboard = () => {
         {/* Options for managing notes */}
         <h3>Manage Notes</h3>
         <ul>
-          <li><button>Create Note</button></li>
-          <li><button>View Notes</button></li>
-          <li><button>Edit Note</button></li>
-          <li><button>Delete Note</button></li>
+          <li><Link to='/user/create' >Create Notes</Link></li>
+          <li><Link to='/user/notes' >View Notes</Link></li>
+          
         </ul>
       </div>
     </div>
