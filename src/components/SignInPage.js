@@ -1,13 +1,16 @@
-// src/components/SigninPage.js
-
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './SignInPage.css'; 
+import { AuthContext } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const SigninPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  let navigate = useNavigate();
+  // Access the signIn function from the context
+  const { signIn } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,28 +28,33 @@ const SigninPage = () => {
       });
 
       if (response.status === 201) {
+        const data = await response.json();
+        const {user,token} = data;
+
+        console.log('Data received from backend:', data);
+
+        // Call the signIn function with user data
+        signIn(user,token);
+
         // Handle successful sign-in (e.g., display success message or redirect to dashboard)
         window.alert('Sign-in successful. Redirecting to Dashboard');
         console.log('Sign-in successful');
 
-        // Redirect to userdashboard page after a short delay
+        // Redirect to user dashboard page after a short delay
         setTimeout(() => {
-          window.location.href = '/'; //currenty redirectin to home TO BE CHANGED
-      }, 1000); // Redirect after 1 second (1000 milliseconds)
-      }
-      else if (response.status === 404) {
+          navigate('/user'); 
+        }, 1000); // Redirect after 1 second (1000 milliseconds)
+
+      } else if (response.status === 404) {
         // Handle existing user error
         window.alert('User not found');
-      }
-      else if (response.status === 422) {
-        // Handle existing user error
+      } else if (response.status === 422) {
+        // Handle invalid credentials error
         window.alert('Invalid Credentials');
-      }
-      else if (response.status === 500) {
-        // Handle existing user error
+      } else if (response.status === 500) {
+        // Handle server error
         window.alert('Something went wrong at Backend');
-      }
-      else {
+      } else {
         throw new Error('Sign-in failed');
       }
     } catch (error) {
